@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Ingreso - Geología UNAB</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- CONTENEDOR PRINCIPAL (Sidebar + Main) -->
+    <div class="app-layout">
+
+        <!-- BARRA LATERAL -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <img src="image/fi-1.png" alt="">
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <div class="icon-placeholder account-avatar">N</div>
+                    <span>Cuenta</span>
+                </li>
+                <li class="active">
+                    <div class="icon-placeholder">📊</div>
+                    <span>Tablero</span>
+                </li>
+                <li>
+                    <div class="icon-placeholder">📝</div>
+                    <span>Fichas</span>
+                </li>
+                <li>
+                    <div class="icon-placeholder">📅</div>
+                    <span>Calendario</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 class="page-title">Tablero de Ingreso</h1>
+            </header>
+
+            <div class="dashboard-container">
+                
+                <!-- Barra de progreso del Wizard -->
+                <div class="wizard-header" id="wizard-progress" style="display: none;">
+                    <div class="step" id="indicator-1">1. Datos Personales</div>
+                    <div class="step" id="indicator-2">2. Información Médica</div>
+                    <div class="step" id="indicator-3">3. Protocolo y Declaración</div>
+                </div>
+
+                <!-- VISTA 0: SALUDO INICIAL -->
+                <div id="vista-0" class="form-card text-center active-view">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">👋</div>
+                    <h2 style="color: var(--text-main); font-size: 2rem;">¡Hola!</h2>
+                    <p class="subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
+                        Bienvenido al sistema de registro de salidas a terreno de Geología. Para habilitar tu participación en las próximas actividades prácticas, necesitamos que completes tu Ficha Personal y aceptes los protocolos de seguridad.
+                    </p>
+                    <div style="background-color: var(--card-bg-light); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue); display: inline-block; text-align: left; margin-bottom: 2rem;">
+                        <h4 style="margin-top: 0;">Antes de comenzar, ten a mano:</h4>
+                        <ul style="margin-bottom: 0; padding-left: 1.5rem;">
+                            <li>Tu RUT y datos de contacto.</li>
+                            <li>Información de tu sistema de salud (Fonasa/Isapre u Otros).</li>
+                            <li>Datos de un contacto de emergencia.</li>
+                        </ul>
+                    </div>
+                    <br>
+                    <button type="button" class="btn-primary" onclick="cambiarVista(1)" style="font-size: 1.2rem; padding: 1rem 3rem;">Comenzar Ficha</button>
+                </div>
+
+                <!-- VISTA 1: DATOS PERSONALES -->
+                <div id="vista-1" class="form-card hidden-view">
+                    <h2 style="color: var(--text-main);">Ficha de Ingreso - Datos Personales</h2>
+                    <p class="subtitle">Por favor, complete los siguientes datos para iniciar el proceso.</p>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="nombre">Nombre completo</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rut">RUT</label>
+                            <input type="text" id="rut" name="rut" placeholder="Ej. 12.345.678-9" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edad">Edad</label>
+                            <input type="number" id="edad" name="edad" placeholder="Ej. 21" min="15" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono de contacto</label>
+                            <input type="tel" id="telefono" name="telefono" placeholder="+56 9 1234 5678" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo_inst">Correo institucional</label>
+                            <input type="email" id="correo_inst" name="correo_inst" placeholder="usuario@uandresbello.edu" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo_personal">Correo personal</label>
+                            <input type="email" id="correo_personal" name="correo_personal" placeholder="usuario@gmail.com" required>
+                        </div>
+
+                        <div class="form-actions full-width" style="justify-content: space-between;">
+                            <button type="button" class="btn-secondary" onclick="cambiarVista(0)">Volver al Inicio</button>
+                            <button type="button" class="btn-primary" onclick="cambiarVista(2)">Siguiente: Información Médica</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 2: INFORMACIÓN MÉDICA -->
+                <div id="vista-2" class="form-card hidden-view">
+                    <h2 style="color: var(--text-main);">Ficha de Ingreso - Información Médica</h2>
+                    <p class="subtitle">Datos obligatorios de salud y seguridad del estudiante.</p>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sistema_salud">Sistema de salud afiliado</label>
+                            <select id="sistema_salud" name="sistema_salud" onchange="toggleEspecificar('sistema_salud', 'otros', 'div_salud_otros')" required>
+                                <option value="">Seleccione...</option>
+                                <option value="fonasa">Fonasa</option>
+                                <option value="isapre">Isapre</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                            <div id="div_salud_otros" style="display: none; margin-top: 0.5rem;">
+                                <input type="text" id="sistema_salud_otros" name="sistema_salud_otros" placeholder="Especifique su sistema de salud">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="domicilio">Domicilio actual</label>
+                            <input type="text" id="domicilio" name="domicilio" placeholder="Calle, Número, Comuna" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="peso">Peso (kg)</label>
+                            <input type="number" id="peso" name="peso" step="0.1" placeholder="Ej. 70.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="estatura">Estatura (m)</label>
+                            <input type="number" id="estatura" name="estatura" step="0.01" placeholder="Ej. 1.75" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grupo_sanguineo">Grupo Sanguíneo</label>
+                            <select id="grupo_sanguineo" name="grupo_sanguineo" required>
+                                <option value="">Seleccione...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Es donante voluntario?</label>
+                            <div class="radio-group-inline">
+                                <label><input type="radio" name="donante" value="si" required> Sí</label>
+                                <label><input type="radio" name="donante" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>¿Tiene algún tipo de alergia?</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="alergia_radio" value="si" onchange="toggleRadio('alergia_radio', 'div_alergia')"> Sí
+                                </label>
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="alergia_radio" value="no" onchange="toggleRadio('alergia_radio', 'div_alergia')" checked> No
+                                </label>
+                            </div>
+                            <div id="div_alergia" style="display: none;">
+                                <input type="text" id="alergia_detalle" name="alergia_detalle" placeholder="Especifique el tipo de alergia (ej. Penicilina, polen)">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>¿Tiene alguna enfermedad que requiera tratamiento?</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="enfermedad_radio" value="si" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')"> Sí
+                                </label>
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="enfermedad_radio" value="no" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')" checked> No
+                                </label>
+                            </div>
+                            <div id="div_enfermedad" style="display: none;">
+                                <input type="text" id="enfermedad_detalle" name="enfermedad_detalle" placeholder="Especifique la enfermedad y el tratamiento">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>¿Ha sufrido lesiones de tipo traumatológicas?</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="lesion_radio" value="si" onchange="toggleRadio('lesion_radio', 'div_lesion')"> Sí
+                                </label>
+                                <label style="font-weight: normal; cursor: pointer;">
+                                    <input type="radio" name="lesion_radio" value="no" onchange="toggleRadio('lesion_radio', 'div_lesion')" checked> No
+                                </label>
+                            </div>
+                            <div id="div_lesion" style="display: none;">
+                                <input type="text" id="lesion_detalle" name="lesion_detalle" placeholder="Especifique la lesión (ej. Esguince tobillo derecho, fractura de muñeca)">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="situaciones_especiales">Situaciones especiales</label>
+                            <textarea id="situaciones_especiales" name="situaciones_especiales" rows="3" placeholder="Indique cualquier otra situación médica o de salud relevante..."></textarea>
+                        </div>
+
+                        <h3 class="section-title full-width" style="margin-top: 1rem;">Contacto de Emergencia</h3>
+                        <div class="form-group">
+                            <label for="emergencia_nombre">Nombre del contacto</label>
+                            <input type="text" id="emergencia_nombre" name="emergencia_nombre" placeholder="Ej. María Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencia_telefono">Teléfono de emergencia</label>
+                            <input type="tel" id="emergencia_telefono" name="emergencia_telefono" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-actions full-width" style="justify-content: space-between;">
+                            <button type="button" class="btn-secondary" onclick="cambiarVista(1)">Atrás</button>
+                            <button type="button" class="btn-primary" onclick="cambiarVista(3)">Siguiente: Protocolo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 3: PROTOCOLO Y DECLARACIÓN -->
+                <div id="vista-3" class="form-card hidden-view">
+                    <h2 style="color: var(--text-main);">Protocolo y Declaración</h2>
+                    <p class="subtitle">Obligación de Informar y Derecho a Saber. Por este medio declaro que:</p>
+
+                    <div class="matrix-table-container">
+                        <table class="matrix-table">
+                            <thead>
+                                <tr>
+                                    <th class="th-empty"></th>
+                                    <th>Estoy de acuerdo</th>
+                                    <th>No estoy de acuerdo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="question-text">He sido instruido acerca de los riesgos que entrañan las labores que desempeñará en las Salidas a Terreno de la carrera.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_1" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_1" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Que he recibido y he sido instruido sobre el Protocolo de Salida a terreno.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_2" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_2" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Me comprometo a leer el PROTOCOLO DE SALIDA A TERRENO e internalizarlo antes de las actividades.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_3" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_3" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Me doy por informado de los Riesgos, Peligros y precauciones que debo tomar por mi seguridad y la de mis compañeros de terreno, y el cuidado del material y del medio ambiente.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_4" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_4" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Haber entregado datos fidedignos en mi “Ficha Médica y Personal”.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_5" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_5" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Comprometerme a respetar las instrucciones e indicaciones impartidas por el docente a cargo de la salida a terreno, y que están en acuerdo a las normas generales e internas de la Universidad Andrés Bello.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_6" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_6" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Estar en conocimiento de la Ley 17.288 “Monumentos Nacionales”, que no puedo apoderarme de ninguna pieza paleontológica en la visita a terreno.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_7" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_7" value="desacuerdo"></td>
+                                </tr>
+                                <tr>
+                                    <td class="question-text">Me expongo a sanciones por incumplimiento de los puntos precedentes, los que serán sancionados de acuerdo con el Reglamento de Conducta para la Convivencia de la Comunidad.</td>
+                                    <td class="radio-cell"><input type="radio" name="preg_8" value="acuerdo"></td>
+                                    <td class="radio-cell"><input type="radio" name="preg_8" value="desacuerdo"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="declaracion-jurada">
+                        <h3>DECLARACIÓN JURADA:</h3>
+                        <p>Por este medio declaro que libero de responsabilidades a la institución por eventuales problemas o accidentes... <span style="color: var(--unab-red);">*</span></p>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+                                <input type="radio" name="declaracion_jurada" value="acuerdo" style="transform: scale(1.2); margin: 0;"> Estoy de acuerdo
+                            </label>
+                            <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+                                <input type="radio" name="declaracion_jurada" value="desacuerdo" style="transform: scale(1.2); margin: 0;"> No estoy de acuerdo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions full-width" style="justify-content: space-between; margin-top: 2rem;">
+                        <button type="button" class="btn-secondary" onclick="cambiarVista(2)">Atrás</button>
+                        <button type="button" class="btn-primary" style="background-color: var(--unab-red);" onclick="finalizarFormulario()">Enviar Ficha</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- PIE DE PÁGINA INFERIOR (Estilo NVIDIA) -->
+    <footer class="bottom-footer">
+        <div class="footer-content">
+            <img src="image/devhub_banner.gif" alt="Logo/GIF Footer" class="footer-gif">
+            <span class="footer-text">© 2026 Universidad Andrés Bello | Todos los derechos reservados</span>
+        </div>
+    </footer>
+
+    <!-- SCRIPT JS -->
+    <script>
+        function cambiarVista(paso) {
+            document.querySelectorAll('.form-card').forEach(el => {
+                el.classList.remove('active-view');
+                el.classList.add('hidden-view');
+            });
+            
+            const vistaDestino = document.getElementById('vista-' + paso);
+            vistaDestino.classList.remove('hidden-view');
+            vistaDestino.classList.add('active-view');
+
+            const wizardProgress = document.getElementById('wizard-progress');
+            if (paso === 0) {
+                wizardProgress.style.display = 'none';
+            } else {
+                wizardProgress.style.display = 'flex';
+                for (let i = 1; i <= 3; i++) {
+                    const indicador = document.getElementById('indicator-' + i);
+                    if (i === paso) {
+                        indicador.classList.add('active');
+                    } else {
+                        indicador.classList.remove('active');
+                    }
+                }
+            }
+            
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function finalizarFormulario() {
+            alert("¡Ficha enviada con éxito!");
+            cambiarVista(0);
+        }
+
+        function toggleEspecificar(selectId, targetValue, divId) {
+            const select = document.getElementById(selectId);
+            const divOculto = document.getElementById(divId);
+            divOculto.style.display = (select.value === targetValue) ? 'block' : 'none';
+        }
+
+        function toggleRadio(radioName, divId) {
+            const radios = document.getElementsByName(radioName);
+            const divOculto = document.getElementById(divId);
+            let valorSeleccionado = '';
+            
+            for (const radio of radios) {
+                if (radio.checked) {
+                    valorSeleccionado = radio.value;
+                    break;
+                }
+            }
+
+            if (valorSeleccionado === 'si') {
+                divOculto.style.display = 'block';
+            } else {
+                divOculto.style.display = 'none';
+                if(divOculto.querySelector('input')) divOculto.querySelector('input').value = '';
+            }
+        }
+    </script>
+</body>
+</html>

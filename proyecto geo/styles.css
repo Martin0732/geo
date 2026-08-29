@@ -1,0 +1,367 @@
+/* ==============================================================
+   TEMA OSCURO Y LAYOUT BASE
+   ============================================================== */
+:root {
+    --bg-dark: #eaf6f3;
+    --sidebar-bg: #d5ece6;
+    --card-bg: #ffffff;
+    --card-bg-light: #e3f5f0;
+    --text-main: #1f3d3a;
+    --text-muted: #5c7d78;
+    --border-color: #bfe3da;
+    
+    --unab-red: #A90429;
+    --accent-blue: #45b3a5;
+    --accent-hover: #2f9c8c;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Layout que contiene la barra lateral y el contenido */
+.app-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ================== BARRA LATERAL ================== */
+.sidebar {
+    width: 85px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+.sidebar-logo {
+    width: 100%;
+    margin-bottom: 2rem;
+    padding: 12px 8px 0 8px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar-menu li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 0.75rem;
+}
+
+.sidebar-menu li:hover, .sidebar-menu li.active {
+    background-color: var(--card-bg-light);
+    color: var(--text-main);
+}
+
+.sidebar-menu li.active {
+    border-left: 3px solid var(--accent-blue);
+}
+
+.icon-placeholder {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.account-avatar {
+    background-color: var(--accent-blue);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* ================== CONTENIDO PRINCIPAL ================== */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    position: relative;
+}
+
+.top-header {
+    padding: 1.5rem 3rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-dark);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.dashboard-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 2rem 4rem 2rem;
+}
+
+/* ================== VISTAS (SPA) ================== */
+.hidden-view {
+    display: none !important;
+}
+
+.active-view {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================== WIZARD HEADER ================== */
+.wizard-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    background: var(--card-bg);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.step {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.step.active {
+    color: var(--accent-blue);
+    border-bottom: 2px solid var(--accent-blue);
+    padding-bottom: 5px;
+}
+
+/* ================== TARJETAS Y FORMULARIO ================== */
+.form-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(69,179,165,0.15);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+
+input, select, textarea {
+    padding: 0.75rem;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background-color: #ffffff;
+}
+
+.radio-group-inline {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.radio-group-inline label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-main);
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* ================== BOTONES ================== */
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover { background-color: var(--accent-hover); }
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-main);
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover { background-color: var(--card-bg-light); }
+
+/* ================== TABLAS Y DECLARACIÓN ================== */
+.matrix-table-container {
+    overflow-x: auto;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.matrix-table th {
+    background-color: var(--card-bg-light);
+    color: var(--text-main);
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.matrix-table th.th-empty {
+    background-color: transparent;
+    border: none;
+}
+
+.matrix-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-dark);
+}
+
+.matrix-table tbody tr:nth-child(even) td { background-color: #f2faf8; }
+.matrix-table tbody tr:hover td { background-color: #dbf1ec; }
+
+.matrix-table .question-text {
+    width: 60%;
+    color: var(--text-main);
+}
+
+.matrix-table .radio-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.declaracion-jurada {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: var(--card-bg-light);
+    border-left: 4px solid var(--unab-red);
+    border-radius: 4px;
+}
+
+.declaracion-jurada h3 { margin-top: 0; color: var(--text-main); }
+.declaracion-jurada p { color: var(--text-muted); line-height: 1.5; }
+
+/* ================== FOOTER INFERIOR (TIPO NVIDIA) ================== */
+.bottom-footer {
+    background-color: #ffffff;
+    padding: 12px 2rem;
+    border-top: 1px solid #d1d5db;
+    z-index: 20;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-gif {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-text {
+    color: #4b5563;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
