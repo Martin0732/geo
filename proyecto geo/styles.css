@@ -17,7 +17,7 @@
 
 body {
     background-color: var(--bg-dark);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: var(--text-main);
     margin: 0;
     padding: 0;
@@ -338,30 +338,212 @@ input:focus, select:focus, textarea:focus {
 .declaracion-jurada h3 { margin-top: 0; color: var(--text-main); }
 .declaracion-jurada p { color: var(--text-muted); line-height: 1.5; }
 
-/* ================== FOOTER INFERIOR (TIPO NVIDIA) ================== */
-.bottom-footer {
-    background-color: #ffffff;
-    padding: 12px 2rem;
-    border-top: 1px solid #d1d5db;
-    z-index: 20;
-}
-
-.footer-content {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.footer-gif {
-    height: 38px;
-    width: auto;
-    object-fit: contain;
-}
-
 .footer-text {
     color: #4b5563;
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+/* ==============================================================
+   LOGIN
+   ============================================================== */
+.login-screen {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-dark);
+}
+
+.login-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(69,179,165,0.15);
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.login-logo img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+}
+
+.login-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-main);
+    text-align: center;
+}
+
+.login-card .subtitle {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-card .form-group {
+    margin-bottom: 1rem;
+}
+
+.login-error {
+    display: none;
+    color: var(--unab-red);
+    font-size: 0.85rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.login-hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin: 1rem 0 0 0;
+}
+
+/* ==============================================================
+   NAVEGACIÓN ENTRE SECCIONES
+   ============================================================== */
+.section-hidden {
+    display: none !important;
+}
+
+/* ==============================================================
+   CALENDARIO
+   ============================================================== */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-titulo {
+    margin: 0;
+    color: var(--text-main);
+    text-transform: capitalize;
+}
+
+.calendar-nav-btn {
+    padding: 0.5rem 1rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-bottom: 0.5rem;
+}
+
+.calendar-day {
+    min-height: 70px;
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: var(--card-bg-light);
+}
+
+.calendar-day-empty {
+    background: none;
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.today {
+    border-color: var(--accent-blue);
+    border-width: 2px;
+}
+
+.calendar-day.selected {
+    background-color: var(--card-bg-light);
+    border-color: var(--accent-blue);
+}
+
+.calendar-day-number {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+.calendar-day-events {
+    display: flex;
+    gap: 4px;
+    margin-top: 0.5rem;
+}
+
+.event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    display: inline-block;
+}
+
+.day-panel h3 {
+    margin-top: 0;
+    color: var(--text-main);
+}
+
+.day-events-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.day-event-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.8rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.day-event-delete {
+    background: none;
+    border: none;
+    color: var(--unab-red);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+}
+
+.day-event-empty {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+}
+
+.day-add-event {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.day-add-event input {
+    flex: 1;
 }

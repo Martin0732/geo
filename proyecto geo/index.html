@@ -8,8 +8,32 @@
 </head>
 <body>
 
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-screen" class="login-screen">
+        <form class="login-card" onsubmit="intentarLogin(event)">
+            <div class="login-logo">
+                <img src="image/fi-1.png" alt="Geología UNAB">
+            </div>
+            <h2>Iniciar sesión</h2>
+            <p class="subtitle">Ingresa tus credenciales para acceder al sistema de Fichas de Ingreso.</p>
+
+            <div class="form-group">
+                <label for="login-usuario">Usuario</label>
+                <input type="text" id="login-usuario" name="login-usuario" placeholder="usuario" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label for="login-clave">Contraseña</label>
+                <input type="password" id="login-clave" name="login-clave" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+
+            <p id="login-error" class="login-error">Usuario o contraseña incorrectos.</p>
+
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Ingresar</button>
+        </form>
+    </div>
+
     <!-- CONTENEDOR PRINCIPAL (Sidebar + Main) -->
-    <div class="app-layout">
+    <div class="app-layout" id="app-layout" style="display: none;">
 
         <!-- BARRA LATERAL -->
         <nav class="sidebar">
@@ -17,11 +41,11 @@
                 <img src="image/fi-1.png" alt="">
             </div>
             <ul class="sidebar-menu">
-                <li>
-                    <div class="icon-placeholder account-avatar">N</div>
+                <li onclick="cerrarSesion()" title="Cerrar sesión">
+                    <div class="icon-placeholder account-avatar" id="account-avatar">N</div>
                     <span>Cuenta</span>
                 </li>
-                <li class="active">
+                <li class="active" id="menu-tablero" onclick="mostrarSeccion('tablero')">
                     <div class="icon-placeholder">📊</div>
                     <span>Tablero</span>
                 </li>
@@ -29,7 +53,7 @@
                     <div class="icon-placeholder">📝</div>
                     <span>Fichas</span>
                 </li>
-                <li>
+                <li id="menu-calendario" onclick="mostrarSeccion('calendario')">
                     <div class="icon-placeholder">📅</div>
                     <span>Calendario</span>
                 </li>
@@ -42,8 +66,8 @@
                 <h1 class="page-title">Tablero de Ingreso</h1>
             </header>
 
-            <div class="dashboard-container">
-                
+            <div class="dashboard-container" id="main-view-tablero">
+
                 <!-- Barra de progreso del Wizard -->
                 <div class="wizard-header" id="wizard-progress" style="display: none;">
                     <div class="step" id="indicator-1">1. Datos Personales</div>
@@ -305,16 +329,30 @@
                 </div>
 
             </div>
+
+            <!-- VISTA: CALENDARIO -->
+            <div class="dashboard-container section-hidden" id="main-view-calendario">
+                <div class="form-card">
+                    <div class="calendar-header">
+                        <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(-1)">&lt;</button>
+                        <h2 id="calendar-titulo" class="calendar-titulo"></h2>
+                        <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(1)">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+
+                <div class="form-card day-panel" id="day-panel" style="display: none; margin-top: 1.5rem;">
+                    <h3 id="day-panel-titulo"></h3>
+                    <ul class="day-events-list" id="day-events-list"></ul>
+                    <div class="day-add-event">
+                        <input type="text" id="nuevo-evento-input" placeholder="Ej. Salida a terreno: Cerro Renca">
+                        <button type="button" class="btn-primary" onclick="agregarEvento()">Agregar</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
-
-    <!-- PIE DE PÁGINA INFERIOR (Estilo NVIDIA) -->
-    <footer class="bottom-footer">
-        <div class="footer-content">
-            <img src="image/devhub_banner.gif" alt="Logo/GIF Footer" class="footer-gif">
-            <span class="footer-text">© 2026 Universidad Andrés Bello | Todos los derechos reservados</span>
-        </div>
-    </footer>
 
     <!-- SCRIPT JS -->
     <script>
@@ -376,6 +414,249 @@
                 if(divOculto.querySelector('input')) divOculto.querySelector('input').value = '';
             }
         }
+
+        /* ==============================================================
+           LOGIN (básico, sin base de datos — validación local de momento)
+           ============================================================== */
+        const USUARIOS_DEMO = [
+            { usuario: 'admin', clave: 'admin123' },
+            { usuario: 'estudiante', clave: 'geo2026' }
+        ];
+
+        function intentarLogin(event) {
+            event.preventDefault();
+            const usuario = document.getElementById('login-usuario').value.trim().toLowerCase();
+            const clave = document.getElementById('login-clave').value;
+            const errorMsg = document.getElementById('login-error');
+
+            const valido = USUARIOS_DEMO.some(u => u.usuario === usuario && u.clave === clave);
+
+            if (valido) {
+                sessionStorage.setItem('geo_logged_in', 'true');
+                sessionStorage.setItem('geo_usuario', usuario);
+                errorMsg.style.display = 'none';
+                mostrarApp();
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function cerrarSesion() {
+            if (!confirm('¿Cerrar sesión?')) return;
+            sessionStorage.removeItem('geo_logged_in');
+            sessionStorage.removeItem('geo_usuario');
+            document.getElementById('login-usuario').value = '';
+            document.getElementById('login-clave').value = '';
+            document.getElementById('app-layout').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        function mostrarApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-layout').style.display = 'flex';
+
+            const usuario = sessionStorage.getItem('geo_usuario') || 'N';
+            document.getElementById('account-avatar').textContent = usuario.charAt(0).toUpperCase();
+        }
+
+        function verificarSesion() {
+            if (sessionStorage.getItem('geo_logged_in') === 'true') {
+                mostrarApp();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app-layout').style.display = 'none';
+            }
+        }
+
+        /* ==============================================================
+           NAVEGACIÓN ENTRE SECCIONES (Tablero / Calendario)
+           ============================================================== */
+        function mostrarSeccion(seccion) {
+            const vistaTablero = document.getElementById('main-view-tablero');
+            const vistaCalendario = document.getElementById('main-view-calendario');
+            const menuTablero = document.getElementById('menu-tablero');
+            const menuCalendario = document.getElementById('menu-calendario');
+            const titulo = document.querySelector('.page-title');
+
+            if (seccion === 'calendario') {
+                vistaTablero.classList.add('section-hidden');
+                vistaCalendario.classList.remove('section-hidden');
+                menuTablero.classList.remove('active');
+                menuCalendario.classList.add('active');
+                titulo.textContent = 'Calendario de Salidas a Terreno';
+                renderCalendario();
+            } else {
+                vistaCalendario.classList.add('section-hidden');
+                vistaTablero.classList.remove('section-hidden');
+                menuCalendario.classList.remove('active');
+                menuTablero.classList.add('active');
+                titulo.textContent = 'Tablero de Ingreso';
+            }
+        }
+
+        /* ==============================================================
+           CALENDARIO (eventos guardados en localStorage, sin backend aún)
+           ============================================================== */
+        const DIAS_SEMANA = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+        const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        const hoy = new Date();
+        let calMes = hoy.getMonth();
+        let calAnio = hoy.getFullYear();
+        let diaSeleccionado = null;
+
+        function obtenerEventos() {
+            return JSON.parse(localStorage.getItem('geo_eventos') || '{}');
+        }
+
+        function guardarEventos(eventos) {
+            localStorage.setItem('geo_eventos', JSON.stringify(eventos));
+        }
+
+        function formatearFecha(anio, mes, dia) {
+            return anio + '-' + String(mes + 1).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+        }
+
+        function cambiarMes(delta) {
+            calMes += delta;
+            if (calMes < 0) { calMes = 11; calAnio--; }
+            if (calMes > 11) { calMes = 0; calAnio++; }
+            diaSeleccionado = null;
+            document.getElementById('day-panel').style.display = 'none';
+            renderCalendario();
+        }
+
+        function renderCalendario() {
+            const grid = document.getElementById('calendar-grid');
+            const titulo = document.getElementById('calendar-titulo');
+            const eventos = obtenerEventos();
+
+            titulo.textContent = MESES[calMes] + ' ' + calAnio;
+            grid.innerHTML = '';
+
+            DIAS_SEMANA.forEach(dia => {
+                const celda = document.createElement('div');
+                celda.className = 'calendar-weekday';
+                celda.textContent = dia;
+                grid.appendChild(celda);
+            });
+
+            const primerDia = new Date(calAnio, calMes, 1);
+            // getDay(): 0=Dom..6=Sáb -> convertir a offset con Lunes=0
+            const offset = (primerDia.getDay() + 6) % 7;
+            const diasEnMes = new Date(calAnio, calMes + 1, 0).getDate();
+
+            for (let i = 0; i < offset; i++) {
+                const vacio = document.createElement('div');
+                vacio.className = 'calendar-day calendar-day-empty';
+                grid.appendChild(vacio);
+            }
+
+            for (let dia = 1; dia <= diasEnMes; dia++) {
+                const fechaStr = formatearFecha(calAnio, calMes, dia);
+                const celda = document.createElement('div');
+                celda.className = 'calendar-day';
+
+                const esHoy = fechaStr === formatearFecha(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+                if (esHoy) celda.classList.add('today');
+                if (fechaStr === diaSeleccionado) celda.classList.add('selected');
+
+                const numero = document.createElement('div');
+                numero.className = 'calendar-day-number';
+                numero.textContent = dia;
+                celda.appendChild(numero);
+
+                const eventosDia = eventos[fechaStr] || [];
+                if (eventosDia.length > 0) {
+                    const puntos = document.createElement('div');
+                    puntos.className = 'calendar-day-events';
+                    eventosDia.slice(0, 3).forEach(() => {
+                        const punto = document.createElement('span');
+                        punto.className = 'event-dot';
+                        puntos.appendChild(punto);
+                    });
+                    celda.appendChild(puntos);
+                }
+
+                celda.onclick = () => seleccionarDia(fechaStr);
+                grid.appendChild(celda);
+            }
+        }
+
+        function seleccionarDia(fechaStr) {
+            diaSeleccionado = fechaStr;
+            renderCalendario();
+
+            const panel = document.getElementById('day-panel');
+            const titulo = document.getElementById('day-panel-titulo');
+            const [anio, mes, dia] = fechaStr.split('-').map(Number);
+            const fechaObj = new Date(anio, mes - 1, dia);
+            titulo.textContent = 'Eventos del ' + dia + ' de ' + MESES[mes - 1] + ' ' + anio;
+
+            panel.style.display = 'block';
+            renderListaEventos();
+        }
+
+        function renderListaEventos() {
+            const lista = document.getElementById('day-events-list');
+            const eventos = obtenerEventos();
+            const eventosDia = eventos[diaSeleccionado] || [];
+
+            lista.innerHTML = '';
+            if (eventosDia.length === 0) {
+                const vacio = document.createElement('li');
+                vacio.className = 'day-event-empty';
+                vacio.textContent = 'Sin eventos para este día.';
+                lista.appendChild(vacio);
+                return;
+            }
+
+            eventosDia.forEach((evento, index) => {
+                const item = document.createElement('li');
+                item.className = 'day-event-item';
+
+                const texto = document.createElement('span');
+                texto.textContent = evento;
+                item.appendChild(texto);
+
+                const btnEliminar = document.createElement('button');
+                btnEliminar.type = 'button';
+                btnEliminar.className = 'day-event-delete';
+                btnEliminar.textContent = '×';
+                btnEliminar.onclick = () => eliminarEvento(index);
+                item.appendChild(btnEliminar);
+
+                lista.appendChild(item);
+            });
+        }
+
+        function agregarEvento() {
+            const input = document.getElementById('nuevo-evento-input');
+            const texto = input.value.trim();
+            if (!texto || !diaSeleccionado) return;
+
+            const eventos = obtenerEventos();
+            if (!eventos[diaSeleccionado]) eventos[diaSeleccionado] = [];
+            eventos[diaSeleccionado].push(texto);
+            guardarEventos(eventos);
+
+            input.value = '';
+            renderListaEventos();
+            renderCalendario();
+        }
+
+        function eliminarEvento(index) {
+            const eventos = obtenerEventos();
+            eventos[diaSeleccionado].splice(index, 1);
+            if (eventos[diaSeleccionado].length === 0) delete eventos[diaSeleccionado];
+            guardarEventos(eventos);
+
+            renderListaEventos();
+            renderCalendario();
+        }
+
+        /* Inicio */
+        verificarSesion();
     </script>
 </body>
 </html>
