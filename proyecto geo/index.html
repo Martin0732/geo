@@ -1,662 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Ingreso - Geología UNAB</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Geología UNAB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
-    <!-- PANTALLA DE LOGIN -->
-    <div id="login-screen" class="login-screen">
-        <form class="login-card" onsubmit="intentarLogin(event)">
-            <div class="login-logo">
-                <img src="image/fi-1.png" alt="Geología UNAB">
-            </div>
-            <h2>Iniciar sesión</h2>
-            <p class="subtitle">Ingresa tus credenciales para acceder al sistema de Fichas de Ingreso.</p>
+  <div class="login-container">
 
-            <div class="form-group">
-                <label for="login-usuario">Usuario</label>
-                <input type="text" id="login-usuario" name="login-usuario" placeholder="usuario" autocomplete="username" required>
-            </div>
-            <div class="form-group">
-                <label for="login-clave">Contraseña</label>
-                <input type="password" id="login-clave" name="login-clave" placeholder="••••••••" autocomplete="current-password" required>
-            </div>
+    <div class="form-side">
+      <img class="brand-logo" src="image/fi-1.png" alt="Geología UNAB">
 
-            <p id="login-error" class="login-error">Usuario o contraseña incorrectos.</p>
+      <!-- PASO 1: CREDENCIALES (HU 49) -->
+      <div id="paso-credenciales">
+        <h1>Iniciar Sesión</h1>
+        <p class="subtitle">Use su usuario y clave institucional</p>
 
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Ingresar</button>
+        <form id="login-form" novalidate>
+          <div class="input-group">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6.5h18v11H3z" stroke-linejoin="round"/><path d="m3 7 9 6 9-6" stroke-linejoin="round"/></svg>
+            <input type="text" id="usuario" name="usuario" placeholder="Usuario o correo institucional" autocomplete="username" required>
+          </div>
+
+          <div class="input-group">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="1.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            <input type="password" id="clave" name="clave" placeholder="Contraseña" autocomplete="current-password" required>
+          </div>
+
+          <p class="form-error" id="login-error"></p>
+
+          <a href="#" class="forgot-link" id="forgot-link">¿Olvidaste tu contraseña?</a>
+
+          <button type="submit" class="btn-login">INICIAR SESIÓN</button>
+
+          <!-- HU 51: requiere registrar la app en Azure AD / Microsoft Entra ID -->
+          <button type="button" class="btn-microsoft" id="btn-microsoft" disabled
+                  title="Requiere registrar la aplicación en Azure AD / Microsoft Entra ID">
+            <svg viewBox="0 0 23 23" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg>
+            Cuenta Microsoft institucional (próximamente)
+          </button>
         </form>
+
+        <p class="demo-hint">
+          Cuentas de prueba:<br>
+          <strong>docente</strong> / geo2026 &nbsp;·&nbsp; <strong>estudiante</strong> / geo2026<br>
+          <strong>nuevo</strong> / temporal123 (pide cambio de clave)
+        </p>
+      </div>
+
+      <!-- PASO 2: CAMBIO DE CLAVE INICIAL (HU 50) -->
+      <div id="paso-cambio-clave" class="oculto">
+        <h1>Cambia tu clave</h1>
+        <p class="subtitle">Es tu primer ingreso: debes definir una clave personal antes de continuar.</p>
+
+        <form id="cambio-clave-form" novalidate>
+          <div class="input-group">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="1.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            <input type="password" id="clave-nueva" placeholder="Nueva contraseña" autocomplete="new-password" required>
+          </div>
+
+          <div class="input-group">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="1.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            <input type="password" id="clave-repetir" placeholder="Repetir contraseña" autocomplete="new-password" required>
+          </div>
+
+          <p class="form-hint">Mínimo 8 caracteres, con al menos una letra y un número.</p>
+          <p class="form-error" id="cambio-error"></p>
+
+          <button type="submit" class="btn-login">GUARDAR Y CONTINUAR</button>
+          <button type="button" class="btn-plain" id="btn-cancelar-cambio">Cancelar</button>
+        </form>
+      </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL (Sidebar + Main) -->
-    <div class="app-layout" id="app-layout" style="display: none;">
-
-        <!-- BARRA LATERAL -->
-        <nav class="sidebar">
-            <div class="sidebar-logo">
-                <img src="image/fi-1.png" alt="">
-            </div>
-            <ul class="sidebar-menu">
-                <li onclick="cerrarSesion()" title="Cerrar sesión">
-                    <div class="icon-placeholder account-avatar" id="account-avatar">N</div>
-                    <span>Cuenta</span>
-                </li>
-                <li class="active" id="menu-tablero" onclick="mostrarSeccion('tablero')">
-                    <div class="icon-placeholder">📊</div>
-                    <span>Tablero</span>
-                </li>
-                <li>
-                    <div class="icon-placeholder">📝</div>
-                    <span>Fichas</span>
-                </li>
-                <li id="menu-calendario" onclick="mostrarSeccion('calendario')">
-                    <div class="icon-placeholder">📅</div>
-                    <span>Calendario</span>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="main-content">
-            <header class="top-header">
-                <h1 class="page-title">Tablero de Ingreso</h1>
-            </header>
-
-            <div class="dashboard-container" id="main-view-tablero">
-
-                <!-- Barra de progreso del Wizard -->
-                <div class="wizard-header" id="wizard-progress" style="display: none;">
-                    <div class="step" id="indicator-1">1. Datos Personales</div>
-                    <div class="step" id="indicator-2">2. Información Médica</div>
-                    <div class="step" id="indicator-3">3. Protocolo y Declaración</div>
-                </div>
-
-                <!-- VISTA 0: SALUDO INICIAL -->
-                <div id="vista-0" class="form-card text-center active-view">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">👋</div>
-                    <h2 style="color: var(--text-main); font-size: 2rem;">¡Hola!</h2>
-                    <p class="subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
-                        Bienvenido al sistema de registro de salidas a terreno de Geología. Para habilitar tu participación en las próximas actividades prácticas, necesitamos que completes tu Ficha Personal y aceptes los protocolos de seguridad.
-                    </p>
-                    <div style="background-color: var(--card-bg-light); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue); display: inline-block; text-align: left; margin-bottom: 2rem;">
-                        <h4 style="margin-top: 0;">Antes de comenzar, ten a mano:</h4>
-                        <ul style="margin-bottom: 0; padding-left: 1.5rem;">
-                            <li>Tu RUT y datos de contacto.</li>
-                            <li>Información de tu sistema de salud (Fonasa/Isapre u Otros).</li>
-                            <li>Datos de un contacto de emergencia.</li>
-                        </ul>
-                    </div>
-                    <br>
-                    <button type="button" class="btn-primary" onclick="cambiarVista(1)" style="font-size: 1.2rem; padding: 1rem 3rem;">Comenzar Ficha</button>
-                </div>
-
-                <!-- VISTA 1: DATOS PERSONALES -->
-                <div id="vista-1" class="form-card hidden-view">
-                    <h2 style="color: var(--text-main);">Ficha de Ingreso - Datos Personales</h2>
-                    <p class="subtitle">Por favor, complete los siguientes datos para iniciar el proceso.</p>
-
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label for="nombre">Nombre completo</label>
-                            <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="rut">RUT</label>
-                            <input type="text" id="rut" name="rut" placeholder="Ej. 12.345.678-9" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_nacimiento">Fecha de nacimiento</label>
-                            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edad">Edad</label>
-                            <input type="number" id="edad" name="edad" placeholder="Ej. 21" min="15" max="100" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono">Teléfono de contacto</label>
-                            <input type="tel" id="telefono" name="telefono" placeholder="+56 9 1234 5678" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="correo_inst">Correo institucional</label>
-                            <input type="email" id="correo_inst" name="correo_inst" placeholder="usuario@uandresbello.edu" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="correo_personal">Correo personal</label>
-                            <input type="email" id="correo_personal" name="correo_personal" placeholder="usuario@gmail.com" required>
-                        </div>
-
-                        <div class="form-actions full-width" style="justify-content: space-between;">
-                            <button type="button" class="btn-secondary" onclick="cambiarVista(0)">Volver al Inicio</button>
-                            <button type="button" class="btn-primary" onclick="cambiarVista(2)">Siguiente: Información Médica</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VISTA 2: INFORMACIÓN MÉDICA -->
-                <div id="vista-2" class="form-card hidden-view">
-                    <h2 style="color: var(--text-main);">Ficha de Ingreso - Información Médica</h2>
-                    <p class="subtitle">Datos obligatorios de salud y seguridad del estudiante.</p>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="sistema_salud">Sistema de salud afiliado</label>
-                            <select id="sistema_salud" name="sistema_salud" onchange="toggleEspecificar('sistema_salud', 'otros', 'div_salud_otros')" required>
-                                <option value="">Seleccione...</option>
-                                <option value="fonasa">Fonasa</option>
-                                <option value="isapre">Isapre</option>
-                                <option value="otros">Otros</option>
-                            </select>
-                            <div id="div_salud_otros" style="display: none; margin-top: 0.5rem;">
-                                <input type="text" id="sistema_salud_otros" name="sistema_salud_otros" placeholder="Especifique su sistema de salud">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="domicilio">Domicilio actual</label>
-                            <input type="text" id="domicilio" name="domicilio" placeholder="Calle, Número, Comuna" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="peso">Peso (kg)</label>
-                            <input type="number" id="peso" name="peso" step="0.1" placeholder="Ej. 70.5" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="estatura">Estatura (m)</label>
-                            <input type="number" id="estatura" name="estatura" step="0.01" placeholder="Ej. 1.75" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="grupo_sanguineo">Grupo Sanguíneo</label>
-                            <select id="grupo_sanguineo" name="grupo_sanguineo" required>
-                                <option value="">Seleccione...</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>¿Es donante voluntario?</label>
-                            <div class="radio-group-inline">
-                                <label><input type="radio" name="donante" value="si" required> Sí</label>
-                                <label><input type="radio" name="donante" value="no"> No</label>
-                            </div>
-                        </div>
-                        <div class="form-group full-width">
-                            <label>¿Tiene algún tipo de alergia?</label>
-                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="alergia_radio" value="si" onchange="toggleRadio('alergia_radio', 'div_alergia')"> Sí
-                                </label>
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="alergia_radio" value="no" onchange="toggleRadio('alergia_radio', 'div_alergia')" checked> No
-                                </label>
-                            </div>
-                            <div id="div_alergia" style="display: none;">
-                                <input type="text" id="alergia_detalle" name="alergia_detalle" placeholder="Especifique el tipo de alergia (ej. Penicilina, polen)">
-                            </div>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label>¿Tiene alguna enfermedad que requiera tratamiento?</label>
-                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="enfermedad_radio" value="si" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')"> Sí
-                                </label>
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="enfermedad_radio" value="no" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')" checked> No
-                                </label>
-                            </div>
-                            <div id="div_enfermedad" style="display: none;">
-                                <input type="text" id="enfermedad_detalle" name="enfermedad_detalle" placeholder="Especifique la enfermedad y el tratamiento">
-                            </div>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label>¿Ha sufrido lesiones de tipo traumatológicas?</label>
-                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="lesion_radio" value="si" onchange="toggleRadio('lesion_radio', 'div_lesion')"> Sí
-                                </label>
-                                <label style="font-weight: normal; cursor: pointer;">
-                                    <input type="radio" name="lesion_radio" value="no" onchange="toggleRadio('lesion_radio', 'div_lesion')" checked> No
-                                </label>
-                            </div>
-                            <div id="div_lesion" style="display: none;">
-                                <input type="text" id="lesion_detalle" name="lesion_detalle" placeholder="Especifique la lesión (ej. Esguince tobillo derecho, fractura de muñeca)">
-                            </div>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label for="situaciones_especiales">Situaciones especiales</label>
-                            <textarea id="situaciones_especiales" name="situaciones_especiales" rows="3" placeholder="Indique cualquier otra situación médica o de salud relevante..."></textarea>
-                        </div>
-
-                        <h3 class="section-title full-width" style="margin-top: 1rem;">Contacto de Emergencia</h3>
-                        <div class="form-group">
-                            <label for="emergencia_nombre">Nombre del contacto</label>
-                            <input type="text" id="emergencia_nombre" name="emergencia_nombre" placeholder="Ej. María Pérez" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="emergencia_telefono">Teléfono de emergencia</label>
-                            <input type="tel" id="emergencia_telefono" name="emergencia_telefono" placeholder="+56 9 1234 5678" required>
-                        </div>
-
-                        <div class="form-actions full-width" style="justify-content: space-between;">
-                            <button type="button" class="btn-secondary" onclick="cambiarVista(1)">Atrás</button>
-                            <button type="button" class="btn-primary" onclick="cambiarVista(3)">Siguiente: Protocolo</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VISTA 3: PROTOCOLO Y DECLARACIÓN -->
-                <div id="vista-3" class="form-card hidden-view">
-                    <h2 style="color: var(--text-main);">Protocolo y Declaración</h2>
-                    <p class="subtitle">Obligación de Informar y Derecho a Saber. Por este medio declaro que:</p>
-
-                    <div class="matrix-table-container">
-                        <table class="matrix-table">
-                            <thead>
-                                <tr>
-                                    <th class="th-empty"></th>
-                                    <th>Estoy de acuerdo</th>
-                                    <th>No estoy de acuerdo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="question-text">He sido instruido acerca de los riesgos que entrañan las labores que desempeñará en las Salidas a Terreno de la carrera.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_1" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_1" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Que he recibido y he sido instruido sobre el Protocolo de Salida a terreno.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_2" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_2" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Me comprometo a leer el PROTOCOLO DE SALIDA A TERRENO e internalizarlo antes de las actividades.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_3" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_3" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Me doy por informado de los Riesgos, Peligros y precauciones que debo tomar por mi seguridad y la de mis compañeros de terreno, y el cuidado del material y del medio ambiente.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_4" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_4" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Haber entregado datos fidedignos en mi “Ficha Médica y Personal”.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_5" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_5" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Comprometerme a respetar las instrucciones e indicaciones impartidas por el docente a cargo de la salida a terreno, y que están en acuerdo a las normas generales e internas de la Universidad Andrés Bello.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_6" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_6" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Estar en conocimiento de la Ley 17.288 “Monumentos Nacionales”, que no puedo apoderarme de ninguna pieza paleontológica en la visita a terreno.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_7" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_7" value="desacuerdo"></td>
-                                </tr>
-                                <tr>
-                                    <td class="question-text">Me expongo a sanciones por incumplimiento de los puntos precedentes, los que serán sancionados de acuerdo con el Reglamento de Conducta para la Convivencia de la Comunidad.</td>
-                                    <td class="radio-cell"><input type="radio" name="preg_8" value="acuerdo"></td>
-                                    <td class="radio-cell"><input type="radio" name="preg_8" value="desacuerdo"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="declaracion-jurada">
-                        <h3>DECLARACIÓN JURADA:</h3>
-                        <p>Por este medio declaro que libero de responsabilidades a la institución por eventuales problemas o accidentes... <span style="color: var(--unab-red);">*</span></p>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
-                                <input type="radio" name="declaracion_jurada" value="acuerdo" style="transform: scale(1.2); margin: 0;"> Estoy de acuerdo
-                            </label>
-                            <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
-                                <input type="radio" name="declaracion_jurada" value="desacuerdo" style="transform: scale(1.2); margin: 0;"> No estoy de acuerdo
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-actions full-width" style="justify-content: space-between; margin-top: 2rem;">
-                        <button type="button" class="btn-secondary" onclick="cambiarVista(2)">Atrás</button>
-                        <button type="button" class="btn-primary" style="background-color: var(--unab-red);" onclick="finalizarFormulario()">Enviar Ficha</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- VISTA: CALENDARIO -->
-            <div class="dashboard-container section-hidden" id="main-view-calendario">
-                <div class="form-card">
-                    <div class="calendar-header">
-                        <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(-1)">&lt;</button>
-                        <h2 id="calendar-titulo" class="calendar-titulo"></h2>
-                        <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(1)">&gt;</button>
-                    </div>
-                    <div class="calendar-grid" id="calendar-grid"></div>
-                </div>
-
-                <div class="form-card day-panel" id="day-panel" style="display: none; margin-top: 1.5rem;">
-                    <h3 id="day-panel-titulo"></h3>
-                    <ul class="day-events-list" id="day-events-list"></ul>
-                    <div class="day-add-event">
-                        <input type="text" id="nuevo-evento-input" placeholder="Ej. Salida a terreno: Cerro Renca">
-                        <button type="button" class="btn-primary" onclick="agregarEvento()">Agregar</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+    <div class="welcome-side">
+      <div class="welcome-content">
+        <h2>¡Bienvenido!</h2>
+        <p>Sistema de Fichas de Ingreso y Salidas a Terreno<br>Carrera de Geología</p>
+      </div>
     </div>
 
-    <!-- SCRIPT JS -->
-    <script>
-        function cambiarVista(paso) {
-            document.querySelectorAll('.form-card').forEach(el => {
-                el.classList.remove('active-view');
-                el.classList.add('hidden-view');
-            });
-            
-            const vistaDestino = document.getElementById('vista-' + paso);
-            vistaDestino.classList.remove('hidden-view');
-            vistaDestino.classList.add('active-view');
+  </div>
 
-            const wizardProgress = document.getElementById('wizard-progress');
-            if (paso === 0) {
-                wizardProgress.style.display = 'none';
-            } else {
-                wizardProgress.style.display = 'flex';
-                for (let i = 1; i <= 3; i++) {
-                    const indicador = document.getElementById('indicator-' + i);
-                    if (i === paso) {
-                        indicador.classList.add('active');
-                    } else {
-                        indicador.classList.remove('active');
-                    }
-                }
-            }
-            
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function finalizarFormulario() {
-            alert("¡Ficha enviada con éxito!");
-            cambiarVista(0);
-        }
-
-        function toggleEspecificar(selectId, targetValue, divId) {
-            const select = document.getElementById(selectId);
-            const divOculto = document.getElementById(divId);
-            divOculto.style.display = (select.value === targetValue) ? 'block' : 'none';
-        }
-
-        function toggleRadio(radioName, divId) {
-            const radios = document.getElementsByName(radioName);
-            const divOculto = document.getElementById(divId);
-            let valorSeleccionado = '';
-            
-            for (const radio of radios) {
-                if (radio.checked) {
-                    valorSeleccionado = radio.value;
-                    break;
-                }
-            }
-
-            if (valorSeleccionado === 'si') {
-                divOculto.style.display = 'block';
-            } else {
-                divOculto.style.display = 'none';
-                if(divOculto.querySelector('input')) divOculto.querySelector('input').value = '';
-            }
-        }
-
-        /* ==============================================================
-           LOGIN (básico, sin base de datos — validación local de momento)
-           ============================================================== */
-        const USUARIOS_DEMO = [
-            { usuario: 'admin', clave: 'admin123' },
-            { usuario: 'estudiante', clave: 'geo2026' }
-        ];
-
-        function intentarLogin(event) {
-            event.preventDefault();
-            const usuario = document.getElementById('login-usuario').value.trim().toLowerCase();
-            const clave = document.getElementById('login-clave').value;
-            const errorMsg = document.getElementById('login-error');
-
-            const valido = USUARIOS_DEMO.some(u => u.usuario === usuario && u.clave === clave);
-
-            if (valido) {
-                sessionStorage.setItem('geo_logged_in', 'true');
-                sessionStorage.setItem('geo_usuario', usuario);
-                errorMsg.style.display = 'none';
-                mostrarApp();
-            } else {
-                errorMsg.style.display = 'block';
-            }
-        }
-
-        function cerrarSesion() {
-            if (!confirm('¿Cerrar sesión?')) return;
-            sessionStorage.removeItem('geo_logged_in');
-            sessionStorage.removeItem('geo_usuario');
-            document.getElementById('login-usuario').value = '';
-            document.getElementById('login-clave').value = '';
-            document.getElementById('app-layout').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-        }
-
-        function mostrarApp() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-layout').style.display = 'flex';
-
-            const usuario = sessionStorage.getItem('geo_usuario') || 'N';
-            document.getElementById('account-avatar').textContent = usuario.charAt(0).toUpperCase();
-        }
-
-        function verificarSesion() {
-            if (sessionStorage.getItem('geo_logged_in') === 'true') {
-                mostrarApp();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-layout').style.display = 'none';
-            }
-        }
-
-        /* ==============================================================
-           NAVEGACIÓN ENTRE SECCIONES (Tablero / Calendario)
-           ============================================================== */
-        function mostrarSeccion(seccion) {
-            const vistaTablero = document.getElementById('main-view-tablero');
-            const vistaCalendario = document.getElementById('main-view-calendario');
-            const menuTablero = document.getElementById('menu-tablero');
-            const menuCalendario = document.getElementById('menu-calendario');
-            const titulo = document.querySelector('.page-title');
-
-            if (seccion === 'calendario') {
-                vistaTablero.classList.add('section-hidden');
-                vistaCalendario.classList.remove('section-hidden');
-                menuTablero.classList.remove('active');
-                menuCalendario.classList.add('active');
-                titulo.textContent = 'Calendario de Salidas a Terreno';
-                renderCalendario();
-            } else {
-                vistaCalendario.classList.add('section-hidden');
-                vistaTablero.classList.remove('section-hidden');
-                menuCalendario.classList.remove('active');
-                menuTablero.classList.add('active');
-                titulo.textContent = 'Tablero de Ingreso';
-            }
-        }
-
-        /* ==============================================================
-           CALENDARIO (eventos guardados en localStorage, sin backend aún)
-           ============================================================== */
-        const DIAS_SEMANA = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-        const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
-        const hoy = new Date();
-        let calMes = hoy.getMonth();
-        let calAnio = hoy.getFullYear();
-        let diaSeleccionado = null;
-
-        function obtenerEventos() {
-            return JSON.parse(localStorage.getItem('geo_eventos') || '{}');
-        }
-
-        function guardarEventos(eventos) {
-            localStorage.setItem('geo_eventos', JSON.stringify(eventos));
-        }
-
-        function formatearFecha(anio, mes, dia) {
-            return anio + '-' + String(mes + 1).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
-        }
-
-        function cambiarMes(delta) {
-            calMes += delta;
-            if (calMes < 0) { calMes = 11; calAnio--; }
-            if (calMes > 11) { calMes = 0; calAnio++; }
-            diaSeleccionado = null;
-            document.getElementById('day-panel').style.display = 'none';
-            renderCalendario();
-        }
-
-        function renderCalendario() {
-            const grid = document.getElementById('calendar-grid');
-            const titulo = document.getElementById('calendar-titulo');
-            const eventos = obtenerEventos();
-
-            titulo.textContent = MESES[calMes] + ' ' + calAnio;
-            grid.innerHTML = '';
-
-            DIAS_SEMANA.forEach(dia => {
-                const celda = document.createElement('div');
-                celda.className = 'calendar-weekday';
-                celda.textContent = dia;
-                grid.appendChild(celda);
-            });
-
-            const primerDia = new Date(calAnio, calMes, 1);
-            // getDay(): 0=Dom..6=Sáb -> convertir a offset con Lunes=0
-            const offset = (primerDia.getDay() + 6) % 7;
-            const diasEnMes = new Date(calAnio, calMes + 1, 0).getDate();
-
-            for (let i = 0; i < offset; i++) {
-                const vacio = document.createElement('div');
-                vacio.className = 'calendar-day calendar-day-empty';
-                grid.appendChild(vacio);
-            }
-
-            for (let dia = 1; dia <= diasEnMes; dia++) {
-                const fechaStr = formatearFecha(calAnio, calMes, dia);
-                const celda = document.createElement('div');
-                celda.className = 'calendar-day';
-
-                const esHoy = fechaStr === formatearFecha(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-                if (esHoy) celda.classList.add('today');
-                if (fechaStr === diaSeleccionado) celda.classList.add('selected');
-
-                const numero = document.createElement('div');
-                numero.className = 'calendar-day-number';
-                numero.textContent = dia;
-                celda.appendChild(numero);
-
-                const eventosDia = eventos[fechaStr] || [];
-                if (eventosDia.length > 0) {
-                    const puntos = document.createElement('div');
-                    puntos.className = 'calendar-day-events';
-                    eventosDia.slice(0, 3).forEach(() => {
-                        const punto = document.createElement('span');
-                        punto.className = 'event-dot';
-                        puntos.appendChild(punto);
-                    });
-                    celda.appendChild(puntos);
-                }
-
-                celda.onclick = () => seleccionarDia(fechaStr);
-                grid.appendChild(celda);
-            }
-        }
-
-        function seleccionarDia(fechaStr) {
-            diaSeleccionado = fechaStr;
-            renderCalendario();
-
-            const panel = document.getElementById('day-panel');
-            const titulo = document.getElementById('day-panel-titulo');
-            const [anio, mes, dia] = fechaStr.split('-').map(Number);
-            const fechaObj = new Date(anio, mes - 1, dia);
-            titulo.textContent = 'Eventos del ' + dia + ' de ' + MESES[mes - 1] + ' ' + anio;
-
-            panel.style.display = 'block';
-            renderListaEventos();
-        }
-
-        function renderListaEventos() {
-            const lista = document.getElementById('day-events-list');
-            const eventos = obtenerEventos();
-            const eventosDia = eventos[diaSeleccionado] || [];
-
-            lista.innerHTML = '';
-            if (eventosDia.length === 0) {
-                const vacio = document.createElement('li');
-                vacio.className = 'day-event-empty';
-                vacio.textContent = 'Sin eventos para este día.';
-                lista.appendChild(vacio);
-                return;
-            }
-
-            eventosDia.forEach((evento, index) => {
-                const item = document.createElement('li');
-                item.className = 'day-event-item';
-
-                const texto = document.createElement('span');
-                texto.textContent = evento;
-                item.appendChild(texto);
-
-                const btnEliminar = document.createElement('button');
-                btnEliminar.type = 'button';
-                btnEliminar.className = 'day-event-delete';
-                btnEliminar.textContent = '×';
-                btnEliminar.onclick = () => eliminarEvento(index);
-                item.appendChild(btnEliminar);
-
-                lista.appendChild(item);
-            });
-        }
-
-        function agregarEvento() {
-            const input = document.getElementById('nuevo-evento-input');
-            const texto = input.value.trim();
-            if (!texto || !diaSeleccionado) return;
-
-            const eventos = obtenerEventos();
-            if (!eventos[diaSeleccionado]) eventos[diaSeleccionado] = [];
-            eventos[diaSeleccionado].push(texto);
-            guardarEventos(eventos);
-
-            input.value = '';
-            renderListaEventos();
-            renderCalendario();
-        }
-
-        function eliminarEvento(index) {
-            const eventos = obtenerEventos();
-            eventos[diaSeleccionado].splice(index, 1);
-            if (eventos[diaSeleccionado].length === 0) delete eventos[diaSeleccionado];
-            guardarEventos(eventos);
-
-            renderListaEventos();
-            renderCalendario();
-        }
-
-        /* Inicio */
-        verificarSesion();
-    </script>
+  <script src="scripts/datos.js"></script>
+  <script src="scripts/login.js"></script>
 </body>
 </html>

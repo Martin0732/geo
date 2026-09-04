@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Ingreso - Geología UNAB</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<div class="app-layout" id="app-layout">
+
+    <!-- ================= BARRA LATERAL ================= -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../image/fi-1.png" alt="Geología UNAB">
+        </div>
+        <ul class="sidebar-menu" id="sidebar-menu">
+            <li id="menu-cuenta" onclick="cerrarSesion()" title="Cerrar sesión">
+                <div class="icon-placeholder account-avatar" id="account-avatar">N</div>
+                <span>Salir</span>
+            </li>
+            <li data-seccion="ficha"       onclick="mostrarSeccion('ficha')"><div class="icon-placeholder">📝</div><span>Mi ficha</span></li>
+            <li data-seccion="fichas"      onclick="mostrarSeccion('fichas')"     data-rol="docente"><div class="icon-placeholder">📋</div><span>Fichas</span></li>
+            <li data-seccion="estudiantes" onclick="mostrarSeccion('estudiantes')" data-rol="docente"><div class="icon-placeholder">🎓</div><span>Cursos</span></li>
+            <li data-seccion="alertas"     onclick="mostrarSeccion('alertas')"     data-rol="docente"><div class="icon-placeholder">🚨</div><span>Alertas</span></li>
+            <li data-seccion="bitacora"    onclick="mostrarSeccion('bitacora')"    data-rol="docente"><div class="icon-placeholder">🧭</div><span>Bitácora</span></li>
+            <li data-seccion="reportes"    onclick="mostrarSeccion('reportes')"    data-rol="docente"><div class="icon-placeholder">📄</div><span>Reportes</span></li>
+            <li data-seccion="calendario"  onclick="mostrarSeccion('calendario')"><div class="icon-placeholder">📅</div><span>Calendario</span></li>
+        </ul>
+    </nav>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <main class="main-content">
+        <header class="top-header">
+            <h1 class="page-title" id="page-title">Mi Ficha de Ingreso</h1>
+            <div class="header-actions">
+                <span class="user-chip" id="user-chip"></span>
+                <button type="button" class="bell-btn" onclick="alternarNotificaciones()" title="Notificaciones">
+                    🔔<span class="bell-badge" id="bell-badge" style="display:none;">0</span>
+                </button>
+            </div>
+            <div class="notif-panel" id="notif-panel">
+                <div class="notif-panel-head">
+                    <strong>Notificaciones</strong>
+                    <button type="button" class="link-btn" onclick="limpiarNotificaciones()">Marcar leídas</button>
+                </div>
+                <ul id="notif-lista"></ul>
+            </div>
+        </header>
+
+        <!-- ============================================================
+             SECCIÓN: MI FICHA (HU 52 · HU 53 · HU 56)
+             ============================================================ -->
+        <div class="dashboard-container" id="seccion-ficha">
+
+            <div class="ficha-estado" id="ficha-estado" style="display:none;"></div>
+
+            <div class="wizard-header" id="wizard-progress" style="display: none;">
+                <div class="step" id="indicator-1">1. Datos Personales</div>
+                <div class="step" id="indicator-2">2. Información Médica</div>
+                <div class="step" id="indicator-3">3. Protocolo y Declaración</div>
+            </div>
+
+            <!-- VISTA 0: SALUDO INICIAL -->
+            <div id="vista-0" class="form-card text-center active-view">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">👋</div>
+                <h2 style="color: var(--text-main); font-size: 2rem;" id="saludo-titulo">¡Hola!</h2>
+                <p class="subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
+                    Bienvenido al sistema de registro de salidas a terreno de Geología. Para habilitar tu participación en las próximas actividades prácticas, necesitamos que completes tu Ficha Personal y aceptes los protocolos de seguridad.
+                </p>
+                <div style="background-color: var(--card-bg-light); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-blue); display: inline-block; text-align: left; margin-bottom: 2rem;">
+                    <h4 style="margin-top: 0;">Antes de comenzar, ten a mano:</h4>
+                    <ul style="margin-bottom: 0; padding-left: 1.5rem;">
+                        <li>Tu RUT y datos de contacto.</li>
+                        <li>Información de tu sistema de salud (Fonasa/Isapre u Otros).</li>
+                        <li>Datos de un contacto de emergencia.</li>
+                    </ul>
+                </div>
+                <br>
+                <button type="button" class="btn-primary" onclick="cambiarVista(1)" style="font-size: 1.2rem; padding: 1rem 3rem;" id="btn-comenzar">Comenzar Ficha</button>
+                <button type="button" class="btn-secondary" onclick="verFichaPropia()" style="margin-left: 1rem;" id="btn-ver-ficha" hidden>Ver / Exportar PDF</button>
+            </div>
+
+            <!-- VISTA 1: DATOS PERSONALES -->
+            <div id="vista-1" class="form-card hidden-view">
+                <h2 style="color: var(--text-main);">Ficha de Ingreso - Datos Personales</h2>
+                <p class="subtitle">Por favor, complete los siguientes datos para iniciar el proceso.</p>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rut">RUT</label>
+                        <input type="text" id="rut" name="rut" placeholder="Ej. 12.345.678-9" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edad">Edad</label>
+                        <input type="number" id="edad" name="edad" placeholder="Ej. 21" min="15" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono de contacto</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+56 9 1234 5678" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo_inst">Correo institucional</label>
+                        <input type="email" id="correo_inst" name="correo_inst" placeholder="usuario@uandresbello.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo_personal">Correo personal</label>
+                        <input type="email" id="correo_personal" name="correo_personal" placeholder="usuario@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="asignatura">Asignatura de la salida a terreno</label>
+                        <select id="asignatura" name="asignatura" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="periodo">Período académico</label>
+                        <select id="periodo" name="periodo" required></select>
+                    </div>
+
+                    <div class="form-actions full-width" style="justify-content: space-between;">
+                        <button type="button" class="btn-secondary" onclick="cambiarVista(0)">Volver al Inicio</button>
+                        <button type="button" class="btn-primary" onclick="cambiarVista(2)">Siguiente: Información Médica</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 2: INFORMACIÓN MÉDICA -->
+            <div id="vista-2" class="form-card hidden-view">
+                <h2 style="color: var(--text-main);">Ficha de Ingreso - Información Médica</h2>
+                <p class="subtitle">Datos obligatorios de salud y seguridad del estudiante.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sistema_salud">Sistema de salud afiliado</label>
+                        <select id="sistema_salud" name="sistema_salud" onchange="toggleEspecificar('sistema_salud', 'otros', 'div_salud_otros')" required>
+                            <option value="">Seleccione...</option>
+                            <option value="fonasa">Fonasa</option>
+                            <option value="isapre">Isapre</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                        <div id="div_salud_otros" style="display: none; margin-top: 0.5rem;">
+                            <input type="text" id="sistema_salud_otros" name="sistema_salud_otros" placeholder="Especifique su sistema de salud">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="domicilio">Domicilio actual</label>
+                        <input type="text" id="domicilio" name="domicilio" placeholder="Calle, Número, Comuna" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" name="peso" step="0.1" placeholder="Ej. 70.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estatura">Estatura (m)</label>
+                        <input type="number" id="estatura" name="estatura" step="0.01" placeholder="Ej. 1.75" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="grupo_sanguineo">Grupo Sanguíneo</label>
+                        <select id="grupo_sanguineo" name="grupo_sanguineo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Es donante voluntario?</label>
+                        <div class="radio-group-inline">
+                            <label><input type="radio" name="donante" value="si" required> Sí</label>
+                            <label><input type="radio" name="donante" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>¿Tiene algún tipo de alergia?</label>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="alergia_radio" value="si" onchange="toggleRadio('alergia_radio', 'div_alergia')"> Sí
+                            </label>
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="alergia_radio" value="no" onchange="toggleRadio('alergia_radio', 'div_alergia')" checked> No
+                            </label>
+                        </div>
+                        <div id="div_alergia" style="display: none;">
+                            <input type="text" id="alergia_detalle" name="alergia_detalle" placeholder="Especifique el tipo de alergia (ej. Penicilina, polen)">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>¿Tiene alguna enfermedad que requiera tratamiento?</label>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="enfermedad_radio" value="si" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')"> Sí
+                            </label>
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="enfermedad_radio" value="no" onchange="toggleRadio('enfermedad_radio', 'div_enfermedad')" checked> No
+                            </label>
+                        </div>
+                        <div id="div_enfermedad" style="display: none;">
+                            <input type="text" id="enfermedad_detalle" name="enfermedad_detalle" placeholder="Especifique la enfermedad y el tratamiento">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>¿Ha sufrido lesiones de tipo traumatológicas?</label>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="lesion_radio" value="si" onchange="toggleRadio('lesion_radio', 'div_lesion')"> Sí
+                            </label>
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="lesion_radio" value="no" onchange="toggleRadio('lesion_radio', 'div_lesion')" checked> No
+                            </label>
+                        </div>
+                        <div id="div_lesion" style="display: none;">
+                            <input type="text" id="lesion_detalle" name="lesion_detalle" placeholder="Especifique la lesión (ej. Esguince tobillo derecho, fractura de muñeca)">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="situaciones_especiales">Situaciones especiales</label>
+                        <textarea id="situaciones_especiales" name="situaciones_especiales" rows="3" placeholder="Indique cualquier otra situación médica o de salud relevante..."></textarea>
+                    </div>
+
+                    <h3 class="section-title full-width" style="margin-top: 1rem;">Contacto de Emergencia</h3>
+                    <div class="form-group">
+                        <label for="emergencia_nombre">Nombre del contacto</label>
+                        <input type="text" id="emergencia_nombre" name="emergencia_nombre" placeholder="Ej. María Pérez" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergencia_telefono">Teléfono de emergencia</label>
+                        <input type="tel" id="emergencia_telefono" name="emergencia_telefono" placeholder="+56 9 1234 5678" required>
+                    </div>
+
+                    <div class="form-actions full-width" style="justify-content: space-between;">
+                        <button type="button" class="btn-secondary" onclick="cambiarVista(1)">Atrás</button>
+                        <button type="button" class="btn-primary" onclick="cambiarVista(3)">Siguiente: Protocolo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 3: PROTOCOLO Y DECLARACIÓN -->
+            <div id="vista-3" class="form-card hidden-view">
+                <h2 style="color: var(--text-main);">Protocolo y Declaración</h2>
+                <p class="subtitle">Obligación de Informar y Derecho a Saber. Por este medio declaro que:</p>
+
+                <div class="matrix-table-container">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th class="th-empty"></th>
+                                <th>Estoy de acuerdo</th>
+                                <th>No estoy de acuerdo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="question-text">He sido instruido acerca de los riesgos que entrañan las labores que desempeñará en las Salidas a Terreno de la carrera.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_1" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_1" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Que he recibido y he sido instruido sobre el Protocolo de Salida a terreno.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_2" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_2" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Me comprometo a leer el PROTOCOLO DE SALIDA A TERRENO e internalizarlo antes de las actividades.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_3" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_3" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Me doy por informado de los Riesgos, Peligros y precauciones que debo tomar por mi seguridad y la de mis compañeros de terreno, y el cuidado del material y del medio ambiente.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_4" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_4" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Haber entregado datos fidedignos en mi “Ficha Médica y Personal”.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_5" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_5" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Comprometerme a respetar las instrucciones e indicaciones impartidas por el docente a cargo de la salida a terreno, y que están en acuerdo a las normas generales e internas de la Universidad Andrés Bello.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_6" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_6" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Estar en conocimiento de la Ley 17.288 “Monumentos Nacionales”, que no puedo apoderarme de ninguna pieza paleontológica en la visita a terreno.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_7" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_7" value="desacuerdo"></td>
+                            </tr>
+                            <tr>
+                                <td class="question-text">Me expongo a sanciones por incumplimiento de los puntos precedentes, los que serán sancionados de acuerdo con el Reglamento de Conducta para la Convivencia de la Comunidad.</td>
+                                <td class="radio-cell"><input type="radio" name="preg_8" value="acuerdo"></td>
+                                <td class="radio-cell"><input type="radio" name="preg_8" value="desacuerdo"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="declaracion-jurada">
+                    <h3>DECLARACIÓN JURADA:</h3>
+                    <p>Por este medio declaro que libero de responsabilidades a la institución por eventuales problemas o accidentes... <span style="color: var(--unab-red);">*</span></p>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+                            <input type="radio" name="declaracion_jurada" value="acuerdo" style="transform: scale(1.2); margin: 0;"> Estoy de acuerdo
+                        </label>
+                        <label style="font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+                            <input type="radio" name="declaracion_jurada" value="desacuerdo" style="transform: scale(1.2); margin: 0;"> No estoy de acuerdo
+                        </label>
+                    </div>
+                </div>
+
+                <p class="form-error-box" id="ficha-error" style="display:none;"></p>
+
+                <div class="form-actions full-width" style="justify-content: space-between; margin-top: 2rem;">
+                    <button type="button" class="btn-secondary" onclick="cambiarVista(2)">Atrás</button>
+                    <button type="button" class="btn-primary" style="background-color: var(--unab-red);" onclick="finalizarFormulario()" id="btn-enviar-ficha">Enviar Ficha</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: FICHAS RECIBIDAS (HU 55 · 58 · 59)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-fichas">
+            <div class="stat-grid" id="stats-fichas"></div>
+
+            <div class="form-card">
+                <div class="panel-head">
+                    <h2>Fichas recibidas</h2>
+                    <div class="filtros">
+                        <select id="filtro-fichas-asignatura" onchange="renderPanelFichas()"></select>
+                        <select id="filtro-fichas-estado" onchange="renderPanelFichas()">
+                            <option value="">Todos los estados</option>
+                            <option value="enviada">Enviadas</option>
+                            <option value="actualizada">Actualizadas</option>
+                        </select>
+                        <input type="search" id="filtro-fichas-texto" placeholder="Buscar por nombre o RUT" oninput="renderPanelFichas()">
+                    </div>
+                </div>
+                <div class="tabla-scroll">
+                    <table class="data-table" id="tabla-fichas">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th><th>RUT</th><th>Asignatura</th>
+                                <th>Estado</th><th>Riesgo</th><th>Última actualización</th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: DETALLE DE FICHA (HU 56 - exportable a PDF)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-detalle">
+            <div class="no-print" style="margin-bottom: 1rem; display:flex; gap:.75rem;">
+                <button type="button" class="btn-secondary" onclick="volverDeDetalle()">← Volver</button>
+                <button type="button" class="btn-primary" onclick="exportarFichaPDF()">Exportar a PDF</button>
+            </div>
+            <div class="form-card" id="detalle-ficha"></div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: CURSOS Y ESTUDIANTES (HU 57 · 58)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-estudiantes">
+            <div class="form-card">
+                <div class="panel-head">
+                    <h2>Listado de estudiantes por asignatura</h2>
+                    <div class="filtros">
+                        <select id="filtro-est-asignatura" onchange="renderEstudiantes()"></select>
+                        <select id="filtro-est-periodo" onchange="renderEstudiantes()"></select>
+                    </div>
+                </div>
+
+                <div class="carga-box">
+                    <strong>Cargar listado</strong>
+                    <p class="subtitle" style="margin:.35rem 0 .75rem 0;">
+                        Archivo CSV con columnas <code>rut,nombre,correo</code> (una línea por estudiante).
+                        Se cargará en la asignatura y período seleccionados arriba.
+                    </p>
+                    <div class="carga-controles">
+                        <input type="file" id="archivo-estudiantes" accept=".csv,text/csv">
+                        <button type="button" class="btn-primary" onclick="cargarArchivoEstudiantes()">Cargar CSV</button>
+                        <button type="button" class="btn-secondary" onclick="descargarPlantillaCSV()">Descargar plantilla</button>
+                    </div>
+                </div>
+
+                <div class="tabla-scroll">
+                    <table class="data-table" id="tabla-estudiantes">
+                        <thead>
+                            <tr><th>Nombre</th><th>RUT</th><th>Correo</th><th>Asignatura</th><th>Período</th><th>Ficha</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: ALERTAS DE SALUD (HU 60 · 61 · 62)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-alertas">
+            <div class="stat-grid" id="stats-alertas"></div>
+
+            <div class="form-card">
+                <div class="panel-head">
+                    <h2>Estudiantes con condiciones declaradas</h2>
+                    <div class="filtros">
+                        <select id="filtro-alertas-asignatura" onchange="renderAlertas()"></select>
+                        <select id="filtro-alertas-nivel" onchange="renderAlertas()">
+                            <option value="">Críticos y atención</option>
+                            <option value="critico">Solo críticos</option>
+                            <option value="atencion">Solo atención</option>
+                        </select>
+                        <button type="button" class="btn-primary" onclick="generarReporteCriticos()">Reporte previo a salida</button>
+                    </div>
+                </div>
+                <div class="tabla-scroll">
+                    <table class="data-table" id="tabla-alertas">
+                        <thead>
+                            <tr><th>Estudiante</th><th>RUT</th><th>Asignatura</th><th>Nivel</th><th>Antecedentes</th><th>Contacto emergencia</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: BITÁCORA DE TERRENO (HU 63 · 64)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-bitacora">
+            <div class="form-card">
+                <h2>Registrar suceso en terreno</h2>
+                <p class="subtitle">Cada suceso queda asociado a una asignatura, un período y, opcionalmente, a un estudiante.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="suceso-fecha">Fecha del suceso</label>
+                        <input type="date" id="suceso-fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="suceso-tipo">Tipo de suceso</label>
+                        <select id="suceso-tipo">
+                            <option value="observacion">Observación</option>
+                            <option value="incidente">Incidente</option>
+                            <option value="accidente">Accidente</option>
+                            <option value="salud">Atención de salud</option>
+                            <option value="logistica">Logística</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="suceso-asignatura">Asignatura</label>
+                        <select id="suceso-asignatura" onchange="actualizarEstudiantesSuceso()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="suceso-periodo">Período</label>
+                        <select id="suceso-periodo" onchange="actualizarEstudiantesSuceso()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="suceso-estudiante">Estudiante involucrado</label>
+                        <select id="suceso-estudiante"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="suceso-lugar">Lugar</label>
+                        <input type="text" id="suceso-lugar" placeholder="Ej. Quebrada de Macul, sector alto">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="suceso-descripcion">Descripción</label>
+                        <textarea id="suceso-descripcion" rows="3" placeholder="Describa qué ocurrió y qué medidas se tomaron..."></textarea>
+                    </div>
+                    <div class="form-actions full-width">
+                        <button type="button" class="btn-primary" onclick="registrarSuceso()">Registrar suceso</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card" style="margin-top: 1.5rem;">
+                <div class="panel-head">
+                    <h2>Sucesos registrados</h2>
+                    <div class="filtros">
+                        <select id="filtro-bitacora-asignatura" onchange="renderBitacora()"></select>
+                        <select id="filtro-bitacora-periodo" onchange="renderBitacora()"></select>
+                    </div>
+                </div>
+                <div class="tabla-scroll">
+                    <table class="data-table" id="tabla-bitacora">
+                        <thead>
+                            <tr><th>Fecha</th><th>Tipo</th><th>Asignatura</th><th>Período</th><th>Estudiante</th><th>Lugar</th><th>Descripción</th><th></th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: REPORTES (HU 65 · 66 · 67)
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-reportes">
+            <div class="form-card">
+                <h2>Generar reporte de salida a terreno</h2>
+                <p class="subtitle">El reporte reúne automáticamente los estudiantes inscritos, el estado de sus fichas, las alertas de salud y los sucesos de bitácora del período.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="rep-asignatura">Asignatura</label>
+                        <select id="rep-asignatura"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rep-periodo">Período</label>
+                        <select id="rep-periodo"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rep-fecha">Fecha de la salida</label>
+                        <input type="date" id="rep-fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="rep-lugar">Lugar</label>
+                        <input type="text" id="rep-lugar" placeholder="Ej. Cordón de Chacabuco">
+                    </div>
+                    <div class="form-actions full-width">
+                        <button type="button" class="btn-primary" onclick="generarReporteSalida()">Generar reporte</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card" style="margin-top: 1.5rem;">
+                <div class="panel-head">
+                    <h2>Reportes generados</h2>
+                    <div class="filtros">
+                        <select id="filtro-rep-asignatura" onchange="renderReportes()"></select>
+                        <input type="search" id="filtro-rep-texto" placeholder="Buscar por lugar o período" oninput="renderReportes()">
+                    </div>
+                </div>
+                <div class="tabla-scroll">
+                    <table class="data-table" id="tabla-reportes">
+                        <thead>
+                            <tr><th>Generado</th><th>Asignatura</th><th>Período</th><th>Salida</th><th>Lugar</th><th>Alertas</th><th></th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-card section-hidden" id="reporte-detalle-card" style="margin-top: 1.5rem;">
+                <div class="no-print" style="display:flex; gap:.75rem; margin-bottom:1rem;">
+                    <button type="button" class="btn-secondary" onclick="cerrarDetalleReporte()">Cerrar</button>
+                    <button type="button" class="btn-primary" onclick="imprimirReporte()">Exportar a PDF</button>
+                    <button type="button" class="btn-secondary" onclick="enviarReporteEncargado()">Enviar al encargado de laboratorio</button>
+                </div>
+                <div id="reporte-detalle"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN: CALENDARIO
+             ============================================================ -->
+        <div class="dashboard-container section-hidden" id="seccion-calendario">
+            <div class="form-card">
+                <div class="calendar-header">
+                    <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(-1)">&lt;</button>
+                    <h2 id="calendar-titulo" class="calendar-titulo"></h2>
+                    <button type="button" class="btn-secondary calendar-nav-btn" onclick="cambiarMes(1)">&gt;</button>
+                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+
+            <div class="form-card day-panel" id="day-panel" style="display: none; margin-top: 1.5rem;">
+                <h3 id="day-panel-titulo"></h3>
+                <ul class="day-events-list" id="day-events-list"></ul>
+                <div class="day-add-event">
+                    <input type="text" id="nuevo-evento-input" placeholder="Ej. Salida a terreno: Cerro Renca">
+                    <button type="button" class="btn-primary" onclick="agregarEvento()">Agregar</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Avisos emergentes (HU 54) -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<script src="../scripts/datos.js"></script>
+<script src="../scripts/app.js"></script>
+<script src="../scripts/ficha.js"></script>
+<script src="../scripts/panel.js"></script>
+<script src="../scripts/bitacora.js"></script>
+<script src="../scripts/reportes.js"></script>
+<script src="../scripts/calendario.js"></script>
+<script>iniciarApp();</script>
+</body>
+</html>
